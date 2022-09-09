@@ -2,6 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
+from .models import Category
 
 User = get_user_model()
 
@@ -31,3 +32,22 @@ class LoginForm(forms.Form):
         user = authenticate(username=login, password=password)
         if user is None:
             raise ValidationError('Dane logowania nie są prawidłowe')
+
+
+class AddProductForm(forms.Form):
+    name = forms.CharField()
+    consumption_date_close = forms.DateField()
+    consumption_hours = forms.IntegerField()
+    category = forms.ModelChoiceField(queryset=Category.objects.all())
+    default_price = forms.DecimalField()
+
+
+class AddCategoryForm(forms.Form):
+    name = forms.CharField()
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        if Category.objects.filter(name=name).exists():
+            raise ValidationError('This Category already exist in our database.')
+        return name
+

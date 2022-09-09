@@ -1,5 +1,18 @@
 {% extends 'fridge/base.html' %}
 
 {% block content %}
-    <h1>My fridge</h1>
+    <h1>Fridges data:</h1>
+    {% if fridge_data %}
+        {% for data in fridge_data %}
+                <p>
+                    {{ data.user }}
+                    {{ data.user }}
+                    {{ data.purchase_price }}
+                    {{ data.date_added }}
+                    {{ data.purchase_price }}
+                </p>
+            <br>
+        {% endfor %}
+    {% endif %}
 {% endblock %}
+

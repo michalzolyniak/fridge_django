@@ -15,12 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from fridge_management.views import UserCreateView, LoginView, LogoutView
+from fridge_management.views import \
+    UserCreateView, LoginView, \
+    LogoutView, FridgeView, ProductCreateView, \
+    CategoryCreateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('add_user/', UserCreateView.as_view(), name='add-user'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('fridge/', LogoutView.as_view(), name='fridge'),
+    path('fridge/', FridgeView.as_view(), name='fridge'),
+    path('add_product/', ProductCreateView.as_view(), name='add-product'),
+    path('add_category/', CategoryCreateView.as_view(), name='add-category'),
 ]
