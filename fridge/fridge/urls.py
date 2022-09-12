@@ -18,7 +18,7 @@ from django.urls import path
 from fridge_management.views import \
     UserCreateView, LoginView, \
     LogoutView, FridgeView, ProductCreateView, \
-    CategoryCreateView
+    CategoryCreateView, FridgeAddProductView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,4 +28,5 @@ urlpatterns = [
     path('fridge/', FridgeView.as_view(), name='fridge'),
     path('add_product/', ProductCreateView.as_view(), name='add-product'),
     path('add_category/', CategoryCreateView.as_view(), name='add-category'),
+    path('add_product_to_fridge/', FridgeAddProductView.as_view(), name='add-fridge'),
 ]

@@ -5,11 +5,12 @@
     {% if fridge_data %}
         {% for data in fridge_data %}
                 <p>
-                    {{ data.user }}
-                    {{ data.user }}
+                    {{ data.id }}
                     {{ data.purchase_price }}
                     {{ data.date_added }}
-                    {{ data.purchase_price }}
+                    {{ data.product_id }}
+                    {{ data.user_id }}
+                    {{ data.open }}
                 </p>
             <br>
         {% endfor %}

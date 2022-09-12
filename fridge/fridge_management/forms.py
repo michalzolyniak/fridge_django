@@ -1,8 +1,9 @@
+from datetime import datetime
 from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
-from .models import Category
+from .models import Category, Product
 
 User = get_user_model()
 
@@ -41,6 +42,25 @@ class AddProductForm(forms.Form):
     category = forms.ModelChoiceField(queryset=Category.objects.all())
     default_price = forms.DecimalField()
 
+    # def clean_consumption_date_close(self):
+    #     consumption_date_close = datetime.strptime(self.cleaned_data['consumption_date_close'], '%Y/%m/%d')
+    #     print(consumption_date_close)
+    #     if not isinstance(consumption_date_close, datetime):
+    #         raise ValidationError('Consumption date close must be date in format YYYY-MM-DDDD')
+    #     return consumption_date_close
+
+    # def clean_consumption_hours(self):
+    #     consumption_hours = self.cleaned_data['consumption_hours']
+    #     if not isinstance(consumption_hours, int):
+    #         raise ValidationError('Consumption hours close must be the whole number')
+    #     return consumption_hours
+    #
+    # def clean_default_price(self):
+    #     consumption_hours = self.cleaned_data['default_price']
+    #     if not isinstance(consumption_hours, float):
+    #         raise ValidationError('Default price close must be the float number')
+    #     return consumption_hours
+
 
 class AddCategoryForm(forms.Form):
     name = forms.CharField()
@@ -50,4 +70,13 @@ class AddCategoryForm(forms.Form):
         if Category.objects.filter(name=name).exists():
             raise ValidationError('This Category already exist in our database.')
         return name
+
+
+class AddProductToFridgeForm(forms.Form):
+    product = forms.ModelChoiceField(queryset=Product.objects.all())
+    purchase_price = forms.DecimalField()
+    date_added = forms.DateField()
+    open = forms.BooleanField()
+
+
 
