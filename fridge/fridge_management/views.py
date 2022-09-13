@@ -54,9 +54,21 @@ class LogoutView(RedirectView):
 class FridgeView(View):
     def get(self, request):
         if request.user.is_authenticated:
+            expire_date = {}
             fridge_data = Fridge.objects.filter(user_id=request.user.id).order_by('date_added')
+            list_test = list(fridge_data)
+            # loop by fridge data add Expiry date
+            for elem in fridge_data:
+                fridge_data.test = "1"
+
+            #     if elem.open:
+            #         # print(elem.product.name)
+            #         expire_date[elem.product.name] = elem.product.consumption_date_close
+            #     else:
+            #         expire_date[elem.product.name] = elem.product.consumption_date_close
+            breakpoint()
             return render(request, "fridge/fridge.html",
-                          {"fridge_data": fridge_data})
+                          {"fridge_data": fridge_data, "expire_date": expire_date})
         else:
             return redirect('login')
 

@@ -1,19 +1,30 @@
 {% extends 'fridge/base.html' %}
 
 {% block content %}
-    <h1>Fridges data:</h1>
+    <h1>Products in your fridge:</h1>
     {% if fridge_data %}
-        {% for data in fridge_data %}
-                <p>
-                    {{ data.id }}
-                    {{ data.purchase_price }}
-                    {{ data.date_added }}
-                    {{ data.product_id }}
-                    {{ data.user_id }}
-                    {{ data.open }}
-                </p>
-            <br>
-        {% endfor %}
+        <table>
+            <tr>
+                <th>Expiry date</th>
+                <th>Product</th>
+                <th>Purchase price</th>
+                <th>Open</th>
+                <th>Date added</th>
+            </tr>
+            {% for data in fridge_data %}
+                <TR>
+                    <TD>{{ data.test }}</TD>
+                    <TD>{{ data.product.name}}</TD>
+                    <TD>{{ data.purchase_price }}</TD>
+                    {% if data.open == true %}
+                        <TD>Yes</TD>
+                    {% else %}
+                        <TD>No</TD>
+                    {% endif %}
+                    <TD>{{ data.date_added|date:'Y-m-d' }}</TD>
+                </TR>
+            {% endfor %}
+        </table>
     {% endif %}
 {% endblock %}
 
