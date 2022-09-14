@@ -1,12 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, login, \
     authenticate, logout
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.views.generic import FormView, ListView, RedirectView
-from django.views.generic import FormView, CreateView, UpdateView
+from django.views.generic import RedirectView
+from django.views.generic import FormView
 from django.urls import reverse_lazy
 from django.views import View
+from datetime import timedelta
 from .forms import UserCreateForm, LoginForm, AddProductForm, \
     AddCategoryForm, AddProductToFridgeForm
 from .models import Fridge, Product, Category
@@ -55,18 +54,7 @@ class FridgeView(View):
     def get(self, request):
         if request.user.is_authenticated:
             expire_date = {}
-            fridge_data = Fridge.objects.filter(user_id=request.user.id).order_by('date_added')
-            list_test = list(fridge_data)
-            # loop by fridge data add Expiry date
-            for elem in fridge_data:
-                fridge_data.test = "1"
-
-            #     if elem.open:
-            #         # print(elem.product.name)
-            #         expire_date[elem.product.name] = elem.product.consumption_date_close
-            #     else:
-            #         expire_date[elem.product.name] = elem.product.consumption_date_close
-            breakpoint()
+            fridge_data = Fridge.objects.filter(user_id=request.user.id).order_by('-expiration_date')
             return render(request, "fridge/fridge.html",
                           {"fridge_data": fridge_data, "expire_date": expire_date})
         else:
@@ -87,12 +75,10 @@ class ProductCreateView(View):
         if form.is_valid():
             cd = form.cleaned_data
             name = cd['name']
-            consumption_date_close = cd['consumption_date_close']
             consumption_hours = cd['consumption_hours']
             default_price = cd['default_price']
             Product.objects.create(
                 name=name,
-                consumption_date_close=consumption_date_close,
                 consumption_hours=consumption_hours,
                 default_price=default_price
             )
@@ -119,7 +105,6 @@ class CategoryCreateView(View):
         return render(request, 'fridge/add_category.html', context)
 
 
-# @login_required
 class FridgeAddProductView(View):
     form_class = AddProductToFridgeForm
 
@@ -138,12 +123,17 @@ class FridgeAddProductView(View):
             purchase_price = cd['purchase_price']
             date_added = cd['date_added']
             is_open = cd['open']
+            expiration_date = cd['expiration_date']
+            product_data = Product.objects.get(name=product)
+            if is_open:
+                expiration_date = date_added + timedelta(hours=product_data.consumption_hours)
             Fridge.objects.create(
                 user=current_user,
                 product=product,
                 purchase_price=purchase_price,
                 date_added=date_added,
-                open=is_open
+                open=is_open,
+                expiration_date=expiration_date
             )
             return redirect('fridge')
         return render(request, 'fridge/add_product_fridge.html', context)

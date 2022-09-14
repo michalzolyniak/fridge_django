@@ -37,7 +37,6 @@ class LoginForm(forms.Form):
 
 class AddProductForm(forms.Form):
     name = forms.CharField()
-    consumption_date_close = forms.DateField()
     consumption_hours = forms.IntegerField()
     category = forms.ModelChoiceField(queryset=Category.objects.all())
     default_price = forms.DecimalField()
@@ -75,8 +74,9 @@ class AddCategoryForm(forms.Form):
 class AddProductToFridgeForm(forms.Form):
     product = forms.ModelChoiceField(queryset=Product.objects.all())
     purchase_price = forms.DecimalField()
+    expiration_date = forms.DateField()
     date_added = forms.DateField()
-    open = forms.BooleanField()
+    open = forms.BooleanField(required=False)
 
 
 

@@ -14,7 +14,6 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    consumption_date_close = models.DateField()
     consumption_hours = models.IntegerField()
     category = models.ManyToManyField(Category)
     default_price = models.DecimalField(max_digits=5, decimal_places=2)
@@ -29,6 +28,7 @@ class Fridge(models.Model):
     purchase_price = models.DecimalField(max_digits=5, decimal_places=2)
     date_added = models.DateTimeField()
     open = models.BooleanField(default=False)
+    expiration_date = models.DateTimeField()
 
 
 class Note(models.Model):

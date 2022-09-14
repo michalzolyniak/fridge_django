@@ -12,7 +12,13 @@
 <body style='background-color:{{ color }}'>
 {% if user.username %}
     <h3>username: {{ user.username }} </h3>
+    <form action="/logout/">
+        <input type="submit" value="logout"/>
+    </form>
 {% endif %}
+
+
+
 {% block content%}
 {% endblock %}
 </body>
