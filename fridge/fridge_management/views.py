@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, login, \
     authenticate, logout
 from django.views.generic import RedirectView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView
 from django.urls import reverse_lazy
 from django.views import View
@@ -50,18 +51,15 @@ class LogoutView(RedirectView):
         return super().get(request, *args, **kwargs)
 
 
-class FridgeView(View):
+class FridgeView(LoginRequiredMixin, View):
     def get(self, request):
-        if request.user.is_authenticated:
-            expire_date = {}
-            fridge_data = Fridge.objects.filter(user_id=request.user.id).order_by('-expiration_date')
-            return render(request, "fridge/fridge.html",
-                          {"fridge_data": fridge_data, "expire_date": expire_date})
-        else:
-            return redirect('login')
+        expire_date = {}
+        fridge_data = Fridge.objects.filter(user_id=request.user.id).order_by('-expiration_date')
+        return render(request, "fridge/fridge.html",
+                      {"fridge_data": fridge_data, "expire_date": expire_date})
 
 
-class ProductCreateView(View):
+class ProductCreateView(LoginRequiredMixin, View):
     form_class = AddProductForm
 
     def get(self, request, *args, **kwargs):
@@ -70,23 +68,23 @@ class ProductCreateView(View):
         return render(request, 'fridge/add_product.html', context)
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
-        context = {'form': form}
-        if form.is_valid():
-            cd = form.cleaned_data
-            name = cd['name']
-            consumption_hours = cd['consumption_hours']
-            default_price = cd['default_price']
-            Product.objects.create(
-                name=name,
-                consumption_hours=consumption_hours,
-                default_price=default_price
-            )
-            return redirect('fridge')
-        return render(request, 'fridge/add_category.html', context)
+            form = self.form_class(request.POST)
+            context = {'form': form}
+            if form.is_valid():
+                cd = form.cleaned_data
+                name = cd['name']
+                consumption_hours = cd['consumption_hours']
+                default_price = cd['default_price']
+                Product.objects.create(
+                    name=name,
+                    consumption_hours=consumption_hours,
+                    default_price=default_price
+                )
+                return redirect('fridge')
+            return render(request, 'fridge/add_category.html', context)
 
 
-class CategoryCreateView(View):
+class CategoryCreateView(LoginRequiredMixin, View):
     form_class = AddCategoryForm
 
     def get(self, request, *args, **kwargs):
@@ -105,7 +103,7 @@ class CategoryCreateView(View):
         return render(request, 'fridge/add_category.html', context)
 
 
-class FridgeAddProductView(View):
+class FridgeAddProductView(LoginRequiredMixin,View):
     form_class = AddProductToFridgeForm
 
     def get(self, request, *args, **kwargs):
