@@ -1,6 +1,17 @@
 {% extends 'fridge/base.html' %}
 
 {% block content %}
+    <p>
+        <form action="/add_category/">
+            <input type="submit" value="add new category"/>
+        </form>
+        <form action="/add_product/">
+            <input type="submit" value="add new product"/>
+        </form>
+        <form action="/add_product_to_fridge/">
+            <input type="submit" value="add new product to fridge"/>
+        </form>
+    </p>
     <h1>Products in your fridge:</h1>
     {% if fridge_data %}
         <table>
@@ -11,13 +22,13 @@
                 <th>Purchase price</th>
                 <th>Open</th>
                 <th>Date added</th>
-                <th>Notes</th>
+                <th>Note</th>
             </tr>
             {% for data in fridge_data %}
                 <TR>
                     <TD>{{ data.expiration_date|date:'Y-m-d' }}</TD>
                     <TD>{{ data.product.name}}</TD>
-                    <TD></TD>
+                    <TD>{{data.product.category.name}}</TD>
                     <TD>{{ data.purchase_price }}</TD>
                     {% if data.open == true %}
                         <TD>Yes</TD>
@@ -25,10 +36,9 @@
                         <TD>No</TD>
                     {% endif %}
                     <TD>{{ data.date_added|date:'Y-m-d' }}</TD>
-                    <TD></TD>
-
+                    <TD>{{ data.product.notes.note }}</TD>
                     <TD>
-                        <form action="/note/{{data.id}}">
+                        <form action="/add_note_to_product/{{data.id}}">
                             <input type="submit" value="Add note"/>
                         </form>
                     </TD>

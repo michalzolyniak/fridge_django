@@ -38,8 +38,12 @@ class LoginForm(forms.Form):
 class AddProductForm(forms.Form):
     name = forms.CharField()
     consumption_hours = forms.IntegerField()
+    # categories = (Category.objects.values_list('id', 'name'))
+    # choices = [(avatar.id, avatar_img(avatar, size)) for category in avatars]
+    #category = forms.ModelChoiceField(queryset=Category.objects.all(), widget=forms.CheckboxSelectMultiple)
     category = forms.ModelChoiceField(queryset=Category.objects.all())
     default_price = forms.DecimalField()
+
 
     # def clean_consumption_date_close(self):
     #     consumption_date_close = datetime.strptime(self.cleaned_data['consumption_date_close'], '%Y/%m/%d')
@@ -77,6 +81,10 @@ class AddProductToFridgeForm(forms.Form):
     expiration_date = forms.DateField()
     date_added = forms.DateField()
     open = forms.BooleanField(required=False)
+
+
+class AddNoteForm(forms.Form):
+    note = forms.CharField(widget=forms.Textarea)
 
 
 

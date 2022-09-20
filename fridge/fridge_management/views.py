@@ -8,8 +8,9 @@ from django.urls import reverse_lazy
 from django.views import View
 from datetime import timedelta
 from .forms import UserCreateForm, LoginForm, AddProductForm, \
-    AddCategoryForm, AddProductToFridgeForm
-from .models import Fridge, Product, Category
+    AddCategoryForm, AddProductToFridgeForm, AddNoteForm
+from .models import Fridge, Product, Category, Note
+from django.forms.models import model_to_dict
 
 User = get_user_model()
 
@@ -55,6 +56,15 @@ class FridgeView(LoginRequiredMixin, View):
     def get(self, request):
         expire_date = {}
         fridge_data = Fridge.objects.filter(user_id=request.user.id).order_by('-expiration_date')
+        note = Note.objects.filter(user_id=request.user.id)
+        # for data in fridge_data:
+        #     # print(data.name)
+        #     # product = data.product
+        #     product = Product.objects.filter(name=data.product.name)
+        #     # product.category.all()
+        #     breakpoint()
+        # # categories = fridge_data.Category.all()
+        # breakpoint()
         return render(request, "fridge/fridge.html",
                       {"fridge_data": fridge_data, "expire_date": expire_date})
 
@@ -68,20 +78,26 @@ class ProductCreateView(LoginRequiredMixin, View):
         return render(request, 'fridge/add_product.html', context)
 
     def post(self, request, *args, **kwargs):
-            form = self.form_class(request.POST)
-            context = {'form': form}
-            if form.is_valid():
-                cd = form.cleaned_data
-                name = cd['name']
-                consumption_hours = cd['consumption_hours']
-                default_price = cd['default_price']
-                Product.objects.create(
-                    name=name,
-                    consumption_hours=consumption_hours,
-                    default_price=default_price
-                )
-                return redirect('fridge')
-            return render(request, 'fridge/add_category.html', context)
+        form = self.form_class(request.POST)
+        context = {'form': form}
+        if form.is_valid():
+            cd = form.cleaned_data
+            name = cd['name']
+            consumption_hours = cd['consumption_hours']
+            default_price = cd['default_price']
+            #categories = cd['category']
+            category = cd['category']
+
+            product = Product.objects.create(
+                name=name,
+                consumption_hours=consumption_hours,
+                default_price=default_price
+            )
+
+            product.category.add(category)
+
+            return redirect('fridge')
+        return render(request, 'fridge/add_category.html', context)
 
 
 class CategoryCreateView(LoginRequiredMixin, View):
@@ -103,7 +119,7 @@ class CategoryCreateView(LoginRequiredMixin, View):
         return render(request, 'fridge/add_category.html', context)
 
 
-class FridgeAddProductView(LoginRequiredMixin,View):
+class FridgeAddProductView(LoginRequiredMixin, View):
     form_class = AddProductToFridgeForm
 
     def get(self, request, *args, **kwargs):
@@ -135,4 +151,32 @@ class FridgeAddProductView(LoginRequiredMixin,View):
             )
             return redirect('fridge')
         return render(request, 'fridge/add_product_fridge.html', context)
+
+
 # breakpoint()
+
+
+class NoteCreateView(LoginRequiredMixin, View):
+    form_class = AddNoteForm
+
+    def get(self, request, product_id, *args, **kwargs):
+        form = self.form_class()
+        product = Product.objects.get(id=product_id)
+        context = {'form': form, 'product_name': product.name}
+        return render(request, 'fridge/add_note.html', context)
+
+    def post(self, request, product_id, *args, **kwargs):
+        form = self.form_class(request.POST)
+        context = {'form': form}
+        if form.is_valid():
+            cd = form.cleaned_data
+            note = cd['note']
+            product = Product.objects.get(id=product_id)
+            current_user = request.user
+            Note.objects.create(
+                product=product,
+                user=current_user,
+                notes=note
+            )
+            return redirect('fridge')
+        return render(request, 'fridge/add_note.html', context)
