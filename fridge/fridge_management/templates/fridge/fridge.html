@@ -12,6 +12,15 @@
             <input type="submit" value="add new product to fridge"/>
         </form>
     </p>
+    <p>
+        <form action="/add_product_to_fridge/">
+            <input type="submit" value="Trash report"/>
+        </form>
+        <form action="/add_product_to_fridge/">
+            <input type="submit" value="Eaten report"/>
+        </form>
+    </p>
+
     <h1>Products in your fridge:</h1>
     {% if fridge_data %}
         <table>
@@ -38,12 +47,12 @@
                     <TD>{{ data.date_added|date:'Y-m-d' }}</TD>
                     <TD>{{ data.product.notes.note }}</TD>
                     <TD>
-                        <form action="/add_note_to_product/{{data.id}}">
+                        <form action="/add_note_to_product/{{data.product.id}}">
                             <input type="submit" value="Add note"/>
                         </form>
                     </TD>
                     <TD>
-                        <form action="/delete/{{data.id}}">
+                        <form action="/remove_product_from_fridge/{{data.id}}">
                             <input type="submit" value="Remove from fridge"/>
                         </form>
                     </TD>

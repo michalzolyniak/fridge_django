@@ -6,9 +6,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView
 from django.urls import reverse_lazy
 from django.views import View
-from datetime import timedelta
+from datetime import timedelta, datetime
 from .forms import UserCreateForm, LoginForm, AddProductForm, \
-    AddCategoryForm, AddProductToFridgeForm, AddNoteForm
+    AddCategoryForm, AddProductToFridgeForm, AddNoteForm, RemoveProductFromFridgeForm
 from .models import Fridge, Product, Category, Note
 from django.forms.models import model_to_dict
 
@@ -55,7 +55,7 @@ class LogoutView(RedirectView):
 class FridgeView(LoginRequiredMixin, View):
     def get(self, request):
         expire_date = {}
-        fridge_data = Fridge.objects.filter(user_id=request.user.id).order_by('-expiration_date')
+        fridge_data = Fridge.objects.filter(user_id=request.user.id, status__isnull=True).order_by('-expiration_date')
         note = Note.objects.filter(user_id=request.user.id)
         # for data in fridge_data:
         #     # print(data.name)
@@ -85,7 +85,7 @@ class ProductCreateView(LoginRequiredMixin, View):
             name = cd['name']
             consumption_hours = cd['consumption_hours']
             default_price = cd['default_price']
-            #categories = cd['category']
+            # categories = cd['category']
             category = cd['category']
 
             product = Product.objects.create(
@@ -178,5 +178,31 @@ class NoteCreateView(LoginRequiredMixin, View):
                 user=current_user,
                 notes=note
             )
+            return redirect('fridge')
+        return render(request, 'fridge/add_note.html', context)
+
+
+class FridgeRemoveProductView(LoginRequiredMixin, View):
+    form_class = RemoveProductFromFridgeForm
+
+    def get(self, request, record_id, *args, **kwargs):
+        form = self.form_class()
+        fridge_data = Fridge.objects.get(id=record_id)
+        context = {'form': form, 'product_name': fridge_data.product.name}
+        return render(request, 'fridge/remove_product_fridge.html', context)
+
+    def post(self, request, record_id, *args, **kwargs):
+        form = self.form_class(request.POST)
+        context = {'form': form}
+        if form.is_valid():
+            cd = form.cleaned_data
+            status = cd['status']
+            fridge_data = Fridge.objects.get(id=record_id)
+            if status == "3":
+                fridge_data.delete()
+            else:
+                fridge_data.status = status  # change field
+                fridge_data.status_date = datetime.now()  # change field
+                fridge_data.save()  # this will update only
             return redirect('fridge')
         return render(request, 'fridge/add_note.html', context)

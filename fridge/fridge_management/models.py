@@ -5,6 +5,12 @@ from django.db import models
 from django.conf import settings
 
 
+STATUS = (
+    (1, "Eaten"),
+    (2, "ejected"),
+    (3, "fridge"),
+)
+
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
@@ -35,6 +41,8 @@ class Fridge(models.Model):
     date_added = models.DateTimeField()
     open = models.BooleanField(default=False)
     expiration_date = models.DateTimeField()
+    status = models.IntegerField(choices=STATUS, null=True)
+    status_date = models.DateTimeField(null=True)
 
 
 class Note(models.Model):

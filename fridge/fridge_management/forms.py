@@ -5,7 +5,20 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 from .models import Category, Product
 
+STATUS_T0_CHOSE = (
+    (1, ""),
+    (1.5, "1+"),
+)
+
+STATUS_T0_CHOSE = (
+    (1, "Eaten"),
+    (2, "Ejected"),
+    (3, "Cancel"),
+)
+
+
 User = get_user_model()
+
 
 
 class UserCreateForm(forms.Form):
@@ -86,5 +99,8 @@ class AddProductToFridgeForm(forms.Form):
 class AddNoteForm(forms.Form):
     note = forms.CharField(widget=forms.Textarea)
 
+
+class RemoveProductFromFridgeForm(forms.Form):
+    status = forms.ChoiceField(choices=STATUS_T0_CHOSE)
 
 
