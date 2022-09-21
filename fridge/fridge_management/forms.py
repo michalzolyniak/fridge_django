@@ -5,10 +5,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 from .models import Category, Product
 
-STATUS_T0_CHOSE = (
-    (1, ""),
-    (1.5, "1+"),
-)
 
 STATUS_T0_CHOSE = (
     (1, "Eaten"),
@@ -18,8 +14,6 @@ STATUS_T0_CHOSE = (
 
 
 User = get_user_model()
-
-
 
 class UserCreateForm(forms.Form):
     login = forms.CharField(max_length=150)
@@ -51,31 +45,8 @@ class LoginForm(forms.Form):
 class AddProductForm(forms.Form):
     name = forms.CharField()
     consumption_hours = forms.IntegerField()
-    # categories = (Category.objects.values_list('id', 'name'))
-    # choices = [(avatar.id, avatar_img(avatar, size)) for category in avatars]
-    #category = forms.ModelChoiceField(queryset=Category.objects.all(), widget=forms.CheckboxSelectMultiple)
-    category = forms.ModelChoiceField(queryset=Category.objects.all())
+    category = forms.ModelMultipleChoiceField(queryset=Category.objects.all())
     default_price = forms.DecimalField()
-
-
-    # def clean_consumption_date_close(self):
-    #     consumption_date_close = datetime.strptime(self.cleaned_data['consumption_date_close'], '%Y/%m/%d')
-    #     print(consumption_date_close)
-    #     if not isinstance(consumption_date_close, datetime):
-    #         raise ValidationError('Consumption date close must be date in format YYYY-MM-DDDD')
-    #     return consumption_date_close
-
-    # def clean_consumption_hours(self):
-    #     consumption_hours = self.cleaned_data['consumption_hours']
-    #     if not isinstance(consumption_hours, int):
-    #         raise ValidationError('Consumption hours close must be the whole number')
-    #     return consumption_hours
-    #
-    # def clean_default_price(self):
-    #     consumption_hours = self.cleaned_data['default_price']
-    #     if not isinstance(consumption_hours, float):
-    #         raise ValidationError('Default price close must be the float number')
-    #     return consumption_hours
 
 
 class AddCategoryForm(forms.Form):
@@ -102,5 +73,3 @@ class AddNoteForm(forms.Form):
 
 class RemoveProductFromFridgeForm(forms.Form):
     status = forms.ChoiceField(choices=STATUS_T0_CHOSE)
-
-

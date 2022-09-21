@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView
 from django.urls import reverse_lazy
 from django.views import View
+from django.db.models import Sum
 from datetime import timedelta, datetime
 from .forms import UserCreateForm, LoginForm, AddProductForm, \
     AddCategoryForm, AddProductToFridgeForm, AddNoteForm, RemoveProductFromFridgeForm
@@ -54,19 +55,24 @@ class LogoutView(RedirectView):
 
 class FridgeView(LoginRequiredMixin, View):
     def get(self, request):
-        expire_date = {}
+        notes = Note.objects.filter(user_id=request.user.id)
         fridge_data = Fridge.objects.filter(user_id=request.user.id, status__isnull=True).order_by('-expiration_date')
-        note = Note.objects.filter(user_id=request.user.id)
         # for data in fridge_data:
-        #     # print(data.name)
-        #     # product = data.product
-        #     product = Product.objects.filter(name=data.product.name)
-        #     # product.category.all()
-        #     breakpoint()
-        # # categories = fridge_data.Category.all()
-        # breakpoint()
+        #     for note in notes:
+        #         if data.product.id == note.product.id:
+        #             print(note.notes)
+        fridge_data = Fridge.objects.filter(user_id=request.user.id, status__isnull=True).order_by('-expiration_date')
+        notes = Note.objects.filter(user_id=request.user.id)
+        fridge_value = fridge_data.aggregate(Sum('purchase_price'))
+        fridge_value = fridge_value['purchase_price__sum']
+        waste_value = Fridge.objects.filter(user_id=request.user.id, status=2).aggregate(Sum('purchase_price'))
+        waste_value = waste_value['purchase_price__sum']
+        eaten_value = Fridge.objects.filter(user_id=request.user.id, status=1).aggregate(Sum('purchase_price'))
+        eaten_value = eaten_value['purchase_price__sum']
         return render(request, "fridge/fridge.html",
-                      {"fridge_data": fridge_data, "expire_date": expire_date})
+                      {"fridge_data": fridge_data, "notes:": notes,
+                       "fridge_value": fridge_value,
+                       "waste_value": waste_value, "eaten_value": eaten_value})
 
 
 class ProductCreateView(LoginRequiredMixin, View):
@@ -85,16 +91,15 @@ class ProductCreateView(LoginRequiredMixin, View):
             name = cd['name']
             consumption_hours = cd['consumption_hours']
             default_price = cd['default_price']
-            # categories = cd['category']
-            category = cd['category']
-
+            categories = cd['category']
             product = Product.objects.create(
                 name=name,
                 consumption_hours=consumption_hours,
                 default_price=default_price
             )
 
-            product.category.add(category)
+            for category in categories:
+                product.category.add(category)
 
             return redirect('fridge')
         return render(request, 'fridge/add_category.html', context)
@@ -153,9 +158,6 @@ class FridgeAddProductView(LoginRequiredMixin, View):
         return render(request, 'fridge/add_product_fridge.html', context)
 
 
-# breakpoint()
-
-
 class NoteCreateView(LoginRequiredMixin, View):
     form_class = AddNoteForm
 
@@ -206,3 +208,12 @@ class FridgeRemoveProductView(LoginRequiredMixin, View):
                 fridge_data.save()  # this will update only
             return redirect('fridge')
         return render(request, 'fridge/add_note.html', context)
+
+
+class FridgeWasteView(LoginRequiredMixin, View):
+    def get(self, request):
+        waste_data = Fridge.objects.filter(user_id=request.user.id, status=2).order_by('-status_date')
+        waste_value = waste_data.aggregate(Sum('purchase_price'))
+        waste_value = waste_value['purchase_price__sum']
+        return render(request, "fridge/waste.html",
+                      {"waste_data": waste_data, "waste_value": waste_value})

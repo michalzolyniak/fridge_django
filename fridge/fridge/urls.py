@@ -18,7 +18,8 @@ from django.urls import path
 from fridge_management.views import \
     UserCreateView, LoginView, \
     LogoutView, FridgeView, ProductCreateView, \
-    CategoryCreateView, FridgeAddProductView, NoteCreateView, FridgeRemoveProductView
+    CategoryCreateView, FridgeAddProductView, NoteCreateView, \
+    FridgeRemoveProductView, FridgeWasteView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,4 +32,5 @@ urlpatterns = [
     path('add_product_to_fridge/', FridgeAddProductView.as_view(), name='add-fridge'),
     path('add_note_to_product/<int:product_id>/', NoteCreateView.as_view(), name='add-note'),
     path('remove_product_from_fridge/<int:record_id>/', FridgeRemoveProductView.as_view(), name='remove-fridge'),
+    path('waste/', FridgeWasteView.as_view(), name='waste'),
 ]

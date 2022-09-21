@@ -16,12 +16,6 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-        # return "{} {}".format(self.pk, self.name)
-
-    # @property
-    # def name(self):
-    #     return "{} {}".format(self.first_name, self.last_name)
-
 
 
 class Product(models.Model):

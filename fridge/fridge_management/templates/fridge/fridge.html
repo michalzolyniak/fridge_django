@@ -20,7 +20,6 @@
             <input type="submit" value="Eaten report"/>
         </form>
     </p>
-
     <h1>Products in your fridge:</h1>
     {% if fridge_data %}
         <table>
@@ -37,7 +36,12 @@
                 <TR>
                     <TD>{{ data.expiration_date|date:'Y-m-d' }}</TD>
                     <TD>{{ data.product.name}}</TD>
-                    <TD>{{data.product.category.name}}</TD>
+                    <TD>
+                        {% for category in data.product.category.all %}
+                            {{ category }}
+                        {% endfor %}
+                    </TD>
+
                     <TD>{{ data.purchase_price }}</TD>
                     {% if data.open == true %}
                         <TD>Yes</TD>
@@ -45,7 +49,19 @@
                         <TD>No</TD>
                     {% endif %}
                     <TD>{{ data.date_added|date:'Y-m-d' }}</TD>
-                    <TD>{{ data.product.notes.note }}</TD>
+
+                    {% for note in data.product.notes_set.all %}
+<!--                        {% if data.product.id == note.product.id %}-->
+                            <TD>{{ note.notes }}</TD>
+<!--                        {% endif %}-->
+                    {% endfor %}
+
+<!--                    {% for note in notes %}-->
+<!--                        <TD>{{note.product.id}}</TD>-->
+<!--                    {% endfor %}-->
+
+<!--                    <TD>{{data.product.note}}</TD>-->
+<!--                    <TD>{{ "" }}</TD>-->
                     <TD>
                         <form action="/add_note_to_product/{{data.product.id}}">
                             <input type="submit" value="Add note"/>
@@ -56,10 +72,12 @@
                             <input type="submit" value="Remove from fridge"/>
                         </form>
                     </TD>
-
                 </TR>
             {% endfor %}
         </table>
-    {% endif %}
+        <p>value of products in your fridge: {{ fridge_value }}</p>
+        <p>value of waste: {{ waste_value }}</p>
+        <p>value of eaten product: {{ eaten_value }}</p>
+{% endif %}
 {% endblock %}
 
