@@ -219,3 +219,15 @@ class FridgeEatenProductsView(LoginRequiredMixin, View):
         eaten_value = eaten_value['purchase_price__sum']
         return render(request, "fridge/eaten_products.html",
                       {"eaten_data": eaten_data, "eaten_value": eaten_value})
+
+
+class OpenProductView(LoginRequiredMixin, View):
+    def get(self, request, record_id, *args, **kwargs):
+        fridge_data = Fridge.objects.get(id=record_id)
+        expiration_date = datetime.now() + timedelta(hours=fridge_data.product.consumption_hours)
+        fridge_data.expiration_date = expiration_date  # change field
+        fridge_data.open = True  # change field
+        fridge_data.save()  # this will update only
+        return redirect('fridge')
+
+

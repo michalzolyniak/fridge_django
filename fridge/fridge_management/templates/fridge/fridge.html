@@ -47,7 +47,7 @@
 <!--                    <form action="/close/{{data.id}}">-->
 <!--                        <input type="submit" value="Open product"/>-->
 <!--                    </form>-->
-                    {% if data.open == true %}
+                    {% if data.open == True %}
                         <TD>Yes</TD>
                     {% else %}
                         <TD>No</TD>
@@ -66,18 +66,13 @@
                             <input type="submit" value="Remove from fridge"/>
                         </form>
                     </TD>
-                    <TD>
-                        {% if data.open == true %}
-                            <form action="/close_product/{{data.id}}">
-                                <input type="submit" value="Close product"/>
-                            </form>
-                        {% else %}
-                            <form action="/open_product/{{data.id}}">
-                                <input type="submit" value="Open product"/>
-                            </form>
-                        {% endif %}
-                    </TD>
-
+                        {% if data.open == False %}
+                            <TD>
+                                <form action="/open_product/{{data.id}}">
+                                    <input type="submit" value="Open product"/>
+                                </form>
+                            </TD>
+                         {% endif %}
                 </TR>
             {% endfor %}
         </table>
