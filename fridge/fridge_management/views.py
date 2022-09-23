@@ -16,6 +16,9 @@ User = get_user_model()
 
 
 class UserCreateView(FormView):
+    """
+        User create view
+    """
     template_name = 'fridge/user_create.html'
     form_class = UserCreateForm
     success_url = reverse_lazy('login')
@@ -32,6 +35,9 @@ class UserCreateView(FormView):
 
 
 class LoginView(FormView):
+    """
+        Login view
+    """
     template_name = 'fridge/login.html'
     form_class = LoginForm
     success_url = reverse_lazy('fridge')
@@ -45,6 +51,9 @@ class LoginView(FormView):
 
 
 class LogoutView(RedirectView):
+    """
+        Logout view
+    """
     url = reverse_lazy('login')
 
     def get(self, request, *args, **kwargs):
@@ -53,6 +62,9 @@ class LogoutView(RedirectView):
 
 
 class FridgeView(LoginRequiredMixin, View):
+    """
+        Fridge view
+    """
     def get(self, request):
         fridge_data = Fridge.objects.filter(user_id=request.user.id, status__isnull=True).order_by('expiration_date')
         notes = Note.objects.filter(user_id=request.user.id)
@@ -69,6 +81,9 @@ class FridgeView(LoginRequiredMixin, View):
 
 
 class ProductCreateView(LoginRequiredMixin, View):
+    """
+        Product create view
+    """
     form_class = AddProductForm
 
     def get(self, request, *args, **kwargs):
@@ -99,6 +114,9 @@ class ProductCreateView(LoginRequiredMixin, View):
 
 
 class CategoryCreateView(LoginRequiredMixin, View):
+    """
+        Category create view
+    """
     form_class = AddCategoryForm
 
     def get(self, request, *args, **kwargs):
@@ -118,6 +136,9 @@ class CategoryCreateView(LoginRequiredMixin, View):
 
 
 class FridgeAddProductView(LoginRequiredMixin, View):
+    """
+        Add product to fridge view
+    """
     form_class = AddProductToFridgeForm
 
     def get(self, request, *args, **kwargs):
@@ -152,6 +173,9 @@ class FridgeAddProductView(LoginRequiredMixin, View):
 
 
 class NoteCreateView(LoginRequiredMixin, View):
+    """
+        Add note to product
+    """
     form_class = AddNoteForm
 
     def get(self, request, product_id, *args, **kwargs):
@@ -178,6 +202,9 @@ class NoteCreateView(LoginRequiredMixin, View):
 
 
 class FridgeRemoveProductView(LoginRequiredMixin, View):
+    """
+        Remove product from fridge view
+    """
     form_class = RemoveProductFromFridgeForm
 
     def get(self, request, record_id, *args, **kwargs):
@@ -204,6 +231,9 @@ class FridgeRemoveProductView(LoginRequiredMixin, View):
 
 
 class FridgeWasteView(LoginRequiredMixin, View):
+    """
+        Waste report view
+    """
     def get(self, request):
         waste_data = Fridge.objects.filter(user_id=request.user.id, status=2).order_by('-status_date')
         waste_value = waste_data.aggregate(Sum('purchase_price'))
@@ -213,6 +243,9 @@ class FridgeWasteView(LoginRequiredMixin, View):
 
 
 class FridgeEatenProductsView(LoginRequiredMixin, View):
+    """
+        Eaten report view
+    """
     def get(self, request):
         eaten_data = Fridge.objects.filter(user_id=request.user.id, status=1).order_by('-status_date')
         eaten_value = eaten_data.aggregate(Sum('purchase_price'))
@@ -222,6 +255,9 @@ class FridgeEatenProductsView(LoginRequiredMixin, View):
 
 
 class OpenProductView(LoginRequiredMixin, View):
+    """
+        Open product view
+    """
     def get(self, request, record_id, *args, **kwargs):
         fridge_data = Fridge.objects.get(id=record_id)
         expiration_date = datetime.now() + timedelta(hours=fridge_data.product.consumption_hours)

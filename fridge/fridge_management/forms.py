@@ -16,6 +16,9 @@ User = get_user_model()
 
 
 class UserCreateForm(forms.Form):
+    """
+    Create user form
+    """
     login = forms.CharField(max_length=150)
     password1 = forms.CharField(widget=forms.PasswordInput)
     password2 = forms.CharField(widget=forms.PasswordInput)
@@ -30,6 +33,9 @@ class UserCreateForm(forms.Form):
 
 
 class LoginForm(forms.Form):
+    """
+        Login form
+    """
     login = forms.CharField(max_length=150)
     password = forms.CharField(widget=forms.PasswordInput)
 
@@ -43,6 +49,9 @@ class LoginForm(forms.Form):
 
 
 class AddProductForm(forms.Form):
+    """
+        Add product form
+    """
     name = forms.CharField()
     consumption_hours = forms.IntegerField()
     category = forms.ModelMultipleChoiceField(queryset=Category.objects.all())
@@ -50,6 +59,10 @@ class AddProductForm(forms.Form):
 
 
 class AddCategoryForm(forms.Form):
+    """
+        Add category form
+    """
+
     name = forms.CharField()
 
     def clean_name(self):
@@ -60,6 +73,9 @@ class AddCategoryForm(forms.Form):
 
 
 class AddProductToFridgeForm(forms.Form):
+    """
+        Add product to fridge form
+    """
     product = forms.ModelChoiceField(queryset=Product.objects.all())
     purchase_price = forms.DecimalField()
     expiration_date = forms.DateField()
@@ -68,8 +84,14 @@ class AddProductToFridgeForm(forms.Form):
 
 
 class AddNoteForm(forms.Form):
+    """
+        Add note form
+    """
     note = forms.CharField(widget=forms.Textarea)
 
 
 class RemoveProductFromFridgeForm(forms.Form):
+    """
+        Remove product from fridge form
+    """
     status = forms.ChoiceField(choices=STATUS_T0_CHOSE)

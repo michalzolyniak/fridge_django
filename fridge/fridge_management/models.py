@@ -12,6 +12,9 @@ STATUS = (
 
 
 class Category(models.Model):
+    """
+        product catgories
+    """
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
@@ -19,6 +22,9 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    """
+        Product adds to fridge
+    """
     name = models.CharField(max_length=100, unique=True)
     consumption_hours = models.IntegerField()
     category = models.ManyToManyField(Category)
@@ -29,6 +35,9 @@ class Product(models.Model):
 
 
 class Fridge(models.Model):
+    """
+        Products in fridge per user
+    """
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     purchase_price = models.DecimalField(max_digits=5, decimal_places=2)
@@ -40,6 +49,9 @@ class Fridge(models.Model):
 
 
 class Note(models.Model):
+    """
+        Note to product per user
+    """
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     notes = models.TextField()
