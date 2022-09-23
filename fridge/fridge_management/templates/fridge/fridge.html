@@ -13,11 +13,11 @@
         </form>
     </p>
     <p>
-        <form action="/add_product_to_fridge/">
-            <input type="submit" value="Trash report"/>
+        <form action="/waste/">
+            <input type="submit" value="Waste report"/>
         </form>
-        <form action="/add_product_to_fridge/">
-            <input type="submit" value="Eaten report"/>
+        <form action="/eaten_products/">
+            <input type="submit" value="Eaten product report"/>
         </form>
     </p>
     <h1>Products in your fridge:</h1>
@@ -43,25 +43,19 @@
                     </TD>
 
                     <TD>{{ data.purchase_price }}</TD>
+
+<!--                    <form action="/close/{{data.id}}">-->
+<!--                        <input type="submit" value="Open product"/>-->
+<!--                    </form>-->
                     {% if data.open == true %}
                         <TD>Yes</TD>
                     {% else %}
                         <TD>No</TD>
                     {% endif %}
+
                     <TD>{{ data.date_added|date:'Y-m-d' }}</TD>
+                    <TD>{{ "" }}</TD>
 
-                    {% for note in data.product.notes_set.all %}
-<!--                        {% if data.product.id == note.product.id %}-->
-                            <TD>{{ note.notes }}</TD>
-<!--                        {% endif %}-->
-                    {% endfor %}
-
-<!--                    {% for note in notes %}-->
-<!--                        <TD>{{note.product.id}}</TD>-->
-<!--                    {% endfor %}-->
-
-<!--                    <TD>{{data.product.note}}</TD>-->
-<!--                    <TD>{{ "" }}</TD>-->
                     <TD>
                         <form action="/add_note_to_product/{{data.product.id}}">
                             <input type="submit" value="Add note"/>
@@ -72,12 +66,39 @@
                             <input type="submit" value="Remove from fridge"/>
                         </form>
                     </TD>
+                    <TD>
+                        {% if data.open == true %}
+                            <form action="/close_product/{{data.id}}">
+                                <input type="submit" value="Close product"/>
+                            </form>
+                        {% else %}
+                            <form action="/open_product/{{data.id}}">
+                                <input type="submit" value="Open product"/>
+                            </form>
+                        {% endif %}
+                    </TD>
+
                 </TR>
             {% endfor %}
         </table>
-        <p>value of products in your fridge: {{ fridge_value }}</p>
-        <p>value of waste: {{ waste_value }}</p>
-        <p>value of eaten product: {{ eaten_value }}</p>
 {% endif %}
+{% if fridge_value %}
+    <p>total value of products in your fridge: {{ fridge_value }}</p>
+{% else %}
+    <p>total value of products in your fridge: 0</p>
+{% endif %}
+
+{% if waste_value %}
+    <p>total value of your waste: {{ waste_value }}</p>
+{% else %}
+    <p>total value of your waste: 0</p>
+{% endif %}
+
+{% if eaten_value %}
+    <p>total value of eaten product: {{ eaten_value }}</p>
+{% else %}
+    <p>total value of eaten product: 0</p>
+{% endif %}
+
 {% endblock %}
 

@@ -11,7 +11,6 @@ from datetime import timedelta, datetime
 from .forms import UserCreateForm, LoginForm, AddProductForm, \
     AddCategoryForm, AddProductToFridgeForm, AddNoteForm, RemoveProductFromFridgeForm
 from .models import Fridge, Product, Category, Note
-from django.forms.models import model_to_dict
 
 User = get_user_model()
 
@@ -55,13 +54,7 @@ class LogoutView(RedirectView):
 
 class FridgeView(LoginRequiredMixin, View):
     def get(self, request):
-        notes = Note.objects.filter(user_id=request.user.id)
-        fridge_data = Fridge.objects.filter(user_id=request.user.id, status__isnull=True).order_by('-expiration_date')
-        # for data in fridge_data:
-        #     for note in notes:
-        #         if data.product.id == note.product.id:
-        #             print(note.notes)
-        fridge_data = Fridge.objects.filter(user_id=request.user.id, status__isnull=True).order_by('-expiration_date')
+        fridge_data = Fridge.objects.filter(user_id=request.user.id, status__isnull=True).order_by('expiration_date')
         notes = Note.objects.filter(user_id=request.user.id)
         fridge_value = fridge_data.aggregate(Sum('purchase_price'))
         fridge_value = fridge_value['purchase_price__sum']
@@ -90,7 +83,7 @@ class ProductCreateView(LoginRequiredMixin, View):
             cd = form.cleaned_data
             name = cd['name']
             consumption_hours = cd['consumption_hours']
-            default_price = cd['default_price']
+            default_price = 1
             categories = cd['category']
             product = Product.objects.create(
                 name=name,
@@ -217,3 +210,12 @@ class FridgeWasteView(LoginRequiredMixin, View):
         waste_value = waste_value['purchase_price__sum']
         return render(request, "fridge/waste.html",
                       {"waste_data": waste_data, "waste_value": waste_value})
+
+
+class FridgeEatenProductsView(LoginRequiredMixin, View):
+    def get(self, request):
+        eaten_data = Fridge.objects.filter(user_id=request.user.id, status=1).order_by('-status_date')
+        eaten_value = eaten_data.aggregate(Sum('purchase_price'))
+        eaten_value = eaten_value['purchase_price__sum']
+        return render(request, "fridge/eaten_products.html",
+                      {"eaten_data": eaten_data, "eaten_value": eaten_value})

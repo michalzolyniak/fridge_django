@@ -19,7 +19,7 @@ from fridge_management.views import \
     UserCreateView, LoginView, \
     LogoutView, FridgeView, ProductCreateView, \
     CategoryCreateView, FridgeAddProductView, NoteCreateView, \
-    FridgeRemoveProductView, FridgeWasteView
+    FridgeRemoveProductView, FridgeWasteView, FridgeEatenProductsView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,4 +33,5 @@ urlpatterns = [
     path('add_note_to_product/<int:product_id>/', NoteCreateView.as_view(), name='add-note'),
     path('remove_product_from_fridge/<int:record_id>/', FridgeRemoveProductView.as_view(), name='remove-fridge'),
     path('waste/', FridgeWasteView.as_view(), name='waste'),
+    path('eaten_products/', FridgeEatenProductsView.as_view(), name='eaten-products'),
 ]

@@ -1,6 +1,10 @@
 {% extends 'fridge/base.html' %}
 
 {% block content %}
+    <form action="/">
+        <input type="submit" value="Fridge"/>
+    </form>
+    <br/>
     <form action="" method="post">
         {% csrf_token %}
         {{ form }}

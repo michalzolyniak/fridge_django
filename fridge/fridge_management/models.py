@@ -4,12 +4,12 @@ from django.db import models
 from django.db import models
 from django.conf import settings
 
-
 STATUS = (
     (1, "Eaten"),
     (2, "ejected"),
     (3, "fridge"),
 )
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)

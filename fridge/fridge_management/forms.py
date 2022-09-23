@@ -12,8 +12,8 @@ STATUS_T0_CHOSE = (
     (3, "Cancel"),
 )
 
-
 User = get_user_model()
+
 
 class UserCreateForm(forms.Form):
     login = forms.CharField(max_length=150)
@@ -46,7 +46,7 @@ class AddProductForm(forms.Form):
     name = forms.CharField()
     consumption_hours = forms.IntegerField()
     category = forms.ModelMultipleChoiceField(queryset=Category.objects.all())
-    default_price = forms.DecimalField()
+    # default_price = forms.DecimalField()
 
 
 class AddCategoryForm(forms.Form):
@@ -63,7 +63,7 @@ class AddProductToFridgeForm(forms.Form):
     product = forms.ModelChoiceField(queryset=Product.objects.all())
     purchase_price = forms.DecimalField()
     expiration_date = forms.DateField()
-    date_added = forms.DateField()
+    date_added = forms.DateField(initial=datetime.now())
     open = forms.BooleanField(required=False)
 
 

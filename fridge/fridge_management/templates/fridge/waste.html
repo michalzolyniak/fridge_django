@@ -1,31 +1,37 @@
 {% extends 'fridge/base.html' %}
 
 {% block content %}
-    <h1>Your total waste value is {{waste_value}}:</h1>
-    <h1>Products that you wasted:</h1>
+    <form action="/">
+        <input type="submit" value="Fridge"/>
+    </form>
+    <br/>
     {% if waste_data %}
-        <table>
-            <tr>
-                <th>Product</th>
-                <th>Category</th>
-                <th>Purchase price</th>
-                <th>Waste date</th>
-                <th>Note</th>
-            </tr>
-            {% for data in waste_data %}
-                <TR>
-                    <TD>{{ data.product.name}}</TD>
-                    <TD>
-                        {% for category in data.product.category.all %}
-                            {{ category }}
-                        {% endfor %}
-                    </TD>
-                    <TD>{{ data.purchase_price }}</TD>
-                    <TD>{{ data.status_date|date:'Y-m-d' }}</TD>
-                    <TD></TD>
-                </TR>
-            {% endfor %}
-        </table>
-{% endif %}
+        <h1>Your total value of waste is {{waste_value}} PLN</h1>
+        <h1>Products that you wasted:</h1>
+            <table>
+                <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Purchase price</th>
+                    <th>Waste date</th>
+                    <th>Note</th>
+                </tr>
+                {% for data in waste_data %}
+                    <TR>
+                        <TD>{{ data.product.name}}</TD>
+                        <TD>
+                            {% for category in data.product.category.all %}
+                                {{ category }}
+                            {% endfor %}
+                        </TD>
+                        <TD>{{ data.purchase_price }}</TD>
+                        <TD>{{ data.status_date|date:'Y-m-d' }}</TD>
+                        <TD></TD>
+                    </TR>
+                {% endfor %}
+            </table>
+    {% else %}
+        <p>Sorry there is on data</p>
+    {% endif %}
 {% endblock %}
 

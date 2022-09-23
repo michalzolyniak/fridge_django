@@ -1,0 +1,37 @@
+{% extends 'fridge/base.html' %}
+
+{% block content %}
+    <form action="/">
+        <input type="submit" value="Fridge"/>
+    </form>
+    <br/>
+    {% if eaten_data %}
+    <h1>Your total value of eaten products is {{eaten_value}} PLN</h1>
+    <h1>Products that you ate:</h1>
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Purchase price</th>
+                <th>Eaten date</th>
+                <th>Note</th>
+            </tr>
+            {% for data in eaten_data %}
+                <TR>
+                    <TD>{{ data.product.name}}</TD>
+                    <TD>
+                        {% for category in data.product.category.all %}
+                            {{ category }}
+                        {% endfor %}
+                    </TD>
+                    <TD>{{ data.purchase_price }}</TD>
+                    <TD>{{ data.status_date|date:'Y-m-d' }}</TD>
+                    <TD></TD>
+                </TR>
+            {% endfor %}
+        </table>
+{% else %}
+    <p>Sorry there is on data</p>
+{% endif %}
+{% endblock %}
+
