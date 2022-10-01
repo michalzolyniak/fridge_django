@@ -54,7 +54,12 @@
                     {% endif %}
 
                     <TD>{{ data.date_added|date:'Y-m-d' }}</TD>
-                    <TD>{{ "" }}</TD>
+                    <TD>
+                        {% for note in data.product.note_set.all %}
+                            {{ note }}
+                        {% endfor %}
+                    </TD>
+<!--                    <TD>{{ "" }}</TD>-->
 
                     <TD>
                         <form action="/add_note_to_product/{{data.product.id}}">

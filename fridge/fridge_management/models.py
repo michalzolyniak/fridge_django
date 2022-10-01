@@ -29,6 +29,7 @@ class Product(models.Model):
     consumption_hours = models.IntegerField()
     category = models.ManyToManyField(Category)
     default_price = models.DecimalField(max_digits=5, decimal_places=2)
+    # fridge = models.ForeignKey(Product, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -52,7 +53,9 @@ class Note(models.Model):
     """
         Note to product per user
     """
+    # product = models.ForeignKey(Product, releted_name='notes', on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     notes = models.TextField()
 

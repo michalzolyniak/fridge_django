@@ -160,6 +160,7 @@ class FridgeAddProductView(LoginRequiredMixin, View):
             product_data = Product.objects.get(name=product)
             if is_open:
                 expiration_date = date_added + timedelta(hours=product_data.consumption_hours)
+            # breakpoint()
             Fridge.objects.create(
                 user=current_user,
                 product=product,

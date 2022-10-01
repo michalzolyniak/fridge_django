@@ -35,3 +35,4 @@ def product_to_test():
 #         expiration_date=datetime.now()
 #     )
 #
+# categories = []
