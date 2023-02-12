@@ -21,6 +21,26 @@ class Category(models.Model):
         return self.name
 
 
+
+
+class Fridge(models.Model):
+    """
+        Products in fridge per user
+    """
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    # product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    purchase_price = models.DecimalField(max_digits=5, decimal_places=2)
+    date_added = models.DateTimeField()
+    open = models.BooleanField(default=False)
+    expiration_date = models.DateTimeField()
+    status = models.IntegerField(choices=STATUS, null=True)
+    status_date = models.DateTimeField(null=True)
+
+
+    def __str__(self):
+        return self.name
+
+
 class Product(models.Model):
     """
         Product adds to fridge
@@ -29,24 +49,7 @@ class Product(models.Model):
     consumption_hours = models.IntegerField()
     category = models.ManyToManyField(Category)
     default_price = models.DecimalField(max_digits=5, decimal_places=2)
-    # fridge = models.ForeignKey(Product, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.name
-
-
-class Fridge(models.Model):
-    """
-        Products in fridge per user
-    """
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    purchase_price = models.DecimalField(max_digits=5, decimal_places=2)
-    date_added = models.DateTimeField()
-    open = models.BooleanField(default=False)
-    expiration_date = models.DateTimeField()
-    status = models.IntegerField(choices=STATUS, null=True)
-    status_date = models.DateTimeField(null=True)
+    fridge = models.ForeignKey(Fridge, on_delete=models.CASCADE)
 
 
 class Note(models.Model):
